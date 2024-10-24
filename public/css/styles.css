@@ -1,0 +1,14 @@
+button {
+  background-color: unset;
+}
+
+button.btn-play--red {
+  background-color: #7a1515;
+  color: white;
+}
+button.btn-play--green {
+  background-color: #157a1d;
+  color: white;
+}
+
+/*# sourceMappingURL=styles.css.map */
