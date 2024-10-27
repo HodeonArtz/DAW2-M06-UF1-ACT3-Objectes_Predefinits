@@ -1,17 +1,14 @@
-/* Error: Can't find stylesheet to import.
- *   ,
- * 1 | @import "./base/colors";
- *   |         ^^^^^^^^^^^^^^^
- *   '
- *   public\sass\main.scss 1:9  root stylesheet */
-
-body::before {
-  font-family: "Source Code Pro", "SF Mono", Monaco, Inconsolata, "Fira Mono",
-      "Droid Sans Mono", monospace, monospace;
-  white-space: pre;
-  display: block;
-  padding: 1em;
-  margin-bottom: 1em;
-  border-bottom: 2px solid black;
-  content: "Error: Can't find stylesheet to import.\a   \2577 \a 1 \2502  @import \"./base/colors\";\d\a   \2502          ^^^^^^^^^^^^^^^\a   \2575 \a   public\\sass\\main.scss 1:9  root stylesheet";
+button {
+  background-color: unset;
 }
+
+button.btn-play--red {
+  background-color: #7a1515;
+  color: white;
+}
+button.btn-play--green {
+  background-color: #157a1d;
+  color: white;
+}
+
+/*# sourceMappingURL=styles.css.map */
