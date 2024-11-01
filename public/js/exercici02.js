@@ -1,6 +1,6 @@
 "use strict";
 const countDownElement = document.querySelector(".count-down"),
-  countDownTimeStart = 3;
+  countDownTimeStart = 30;
 
 let countDownTime = countDownTimeStart;
 
