@@ -22,11 +22,12 @@ function random(min, max) {
 
 function setRandomBgColor(colorWindow) {
   const randomColor =
-    backgroundColors[Math.round(random(0, backgroundColors.length))];
+    backgroundColors[Math.round(random(0, backgroundColors.length - 1))];
+  console.log(randomColor);
 
   colorWindow.window.top.document.title = randomColor;
   colorWindow.document.body.className = randomColor.toLowerCase();
-
+  console.log(colorWindow.document);
   // setting this class automatically changes window's color
   colorWindow.document.querySelector(".color-name").textContent = randomColor;
 }
@@ -41,8 +42,9 @@ function openNewColorWindow(
     `fullscreen=no,height=${windowSizePx},width=${windowSizePx},resizable=no,titlebar=yes,
     left=${posX - windowSizePx / 2},top=${posY - windowSizePx / 2}`
   );
-
-  setRandomBgColor(newWindow);
-
   windows.push(newWindow);
+
+  newWindow.addEventListener("load", () => {
+    setRandomBgColor(newWindow);
+  });
 }
