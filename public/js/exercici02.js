@@ -1,7 +1,8 @@
 "use strict";
 const countDownElement = document.querySelector(".count-down"),
   countDownTimeStart = 30,
-  windowSizePx = 320,
+  windowWidthPx = 320,
+  windowHeightPx = 160,
   backgroundColors = ["Amarillo", "Verde", "Cian", "Morado"];
 
 const windows = [];
@@ -26,7 +27,7 @@ function setRandomBgColor(colorWindow) {
   console.log(randomColor);
 
   colorWindow.window.top.document.title = randomColor;
-  colorWindow.document.body.className = randomColor.toLowerCase();
+  colorWindow.document.body.classList.add(randomColor.toLowerCase());
   console.log(colorWindow.document);
   // setting this class automatically changes window's color
   colorWindow.document.querySelector(".color-name").textContent = randomColor;
@@ -39,8 +40,8 @@ function openNewColorWindow(
   const newWindow = window.open(
     "./colorWindow.html",
     "_blank",
-    `fullscreen=no,height=${windowSizePx},width=${windowSizePx},resizable=no,titlebar=yes,
-    left=${posX - windowSizePx / 2},top=${posY - windowSizePx / 2}`
+    `fullscreen=no,height=${windowHeightPx},width=${windowWidthPx},resizable=no,titlebar=yes,
+    left=${posX - windowWidthPx / 2},top=${posY - windowHeightPx / 2}`
   );
   windows.push(newWindow);
 

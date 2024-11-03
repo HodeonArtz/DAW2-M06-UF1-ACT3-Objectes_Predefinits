@@ -1,3 +1,16 @@
+body,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+div {
+  padding: 0;
+  margin: 0;
+}
+
 button {
   background-color: unset;
 }
@@ -9,6 +22,42 @@ button.btn-play--red {
 button.btn-play--green {
   background-color: #157a1d;
   color: white;
+}
+
+body.color-window {
+  width: 100%;
+  height: 100vh;
+  font-size: 2rem;
+}
+body.color-window main {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+}
+body.color-window.amarillo {
+  background-color: #e6f122;
+}
+body.color-window.amarillo .color-name {
+  color: #292b03;
+}
+body.color-window.verde {
+  background-color: #87f7b4;
+}
+body.color-window.verde .color-name {
+  color: #0a8f3f;
+}
+body.color-window.cian {
+  background-color: #57f4d5;
+}
+body.color-window.cian .color-name {
+  color: #065f4e;
+}
+body.color-window.morado {
+  background-color: #9c95de;
+}
+body.color-window.morado .color-name {
+  color: #29226c;
 }
 
 /*# sourceMappingURL=styles.css.map */
