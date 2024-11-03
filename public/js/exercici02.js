@@ -7,7 +7,8 @@ const countDownElement = document.querySelector(".count-down"),
 
 const windows = [];
 
-let countDownTime = countDownTimeStart;
+let countDownTime = countDownTimeStart,
+  totalWindowsOpened = 0;
 
 let countDownInterval = setInterval(() => {
   // View countdown
@@ -47,5 +48,11 @@ function openNewColorWindow(
 
   newWindow.addEventListener("load", () => {
     setRandomBgColor(newWindow);
+    totalWindowsOpened++;
   });
+}
+
+function closeColorWindow(colorWindow) {
+  colorWindow.close();
+  totalWindowsOpened--;
 }
