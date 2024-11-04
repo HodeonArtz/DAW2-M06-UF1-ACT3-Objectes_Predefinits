@@ -1,5 +1,4 @@
 "use strict";
-
 const countDownElement = document.querySelector(".count-down"),
   countDownTimeStart = 30,
   windowWidthPx = 320,
@@ -19,18 +18,16 @@ let countDownInterval = setInterval(() => {
   if (countDownTime <= 0) clearInterval(countDownInterval);
 }, 1000);
 
-function random(min, max) {
-  return Math.random() * (max - min) + min;
-}
+const random = (min, max) => Math.random() * (max - min) + min;
 
-function setRandomBgColor(colorWindow) {
-  const randomColor =
-    backgroundColors[Math.round(random(0, backgroundColors.length - 1))];
-
-  colorWindow.window.top.document.title = randomColor;
-  colorWindow.document.body.classList.add(randomColor.toLowerCase());
+function setRandomBgColor(
+  colorWindow,
+  color = backgroundColors[Math.round(random(0, backgroundColors.length - 1))]
+) {
+  colorWindow.window.top.document.title = color;
+  colorWindow.document.body.classList.add(color.toLowerCase());
   // setting this class automatically changes window's color
-  colorWindow.document.querySelector(".color-name").textContent = randomColor;
+  colorWindow.document.querySelector(".color-name").textContent = color;
 }
 
 function openNewColorWindow(
@@ -73,6 +70,10 @@ function closeColorWindow(...colorWindows) {
   });
 }
 
+function resetClick() {
+  firstClickedWindow = null;
+}
+
 function handleWindowClick(clickedWindow) {
   if (!firstClickedWindow) {
     console.log("First click");
@@ -87,17 +88,17 @@ function handleWindowClick(clickedWindow) {
 
   if (firstColorName !== secondColorName) {
     console.log("Second click: colors are not the same");
-    firstClickedWindow = null;
+    resetClick();
     return;
   }
 
   if (firstClickedWindow !== clickedWindow) {
     console.log("Second click: windows are different");
     closeColorWindow(firstClickedWindow, clickedWindow);
-    firstClickedWindow = null;
+    resetClick();
     return;
   }
   console.log("Second click: same window clicked");
   openNewColorWindow();
-  firstClickedWindow = null;
+  resetClick();
 }
