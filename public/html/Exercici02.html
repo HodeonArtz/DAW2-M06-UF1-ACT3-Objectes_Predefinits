@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/styles.css">
+  <script defer src="../js/myAPI/random.js"></script>
   <script defer src="../js/exercici02.js"></script>
   <title>Exercici02.html</title>
 </head>
@@ -29,9 +30,44 @@
     </div>
   </nav>
   <main>
-    <p class="count-down">
-      30
-    </p>
+    <!-- ---------------------- LAST GAME --------------------- -->
+    <div class="last-game-stats">
+      <h4 class="last-game-stats__title">
+        Última Partida (<span class="last-game-stats__verb"></span>)
+      </h4>
+      <p class="last-game-stats__window-count">
+        Total de ventanas abiertas: <span class="count-number">0</span> 
+      </p>
+    </div>
+
+    <!-- ---------------------- START SCREEN --------------------- -->
+    <div class="start">
+      <button class="start__btn">START</button>
+    </div>
+
+    <!-- ---------------------- IN-GAME SCREEN --------------------- -->
+    <div class="game">
+      <p class="count-down">
+        30
+      </p>
+    </div>
+
+    <!-- ---------------------- RESULTS / END SCREEN --------------------- -->
+    <div class="end">
+      <div class="msg">
+        <h2 class="msg__title">¡Has <span class="msg__verb"></span>!</h2>
+        <p class="msg__text">
+
+        </p>
+        <p class="game-stats">
+          Total de ventanas abiertas: <span class="game-stats__window-count">0</span>
+        </p>
+      </div>
+
+      <button class="new-game__btn">NEW GAME</button>
+
+      <button class="retry__btn">RETRY</button>
+    </div>
   </main>
 </body>
 </html>
