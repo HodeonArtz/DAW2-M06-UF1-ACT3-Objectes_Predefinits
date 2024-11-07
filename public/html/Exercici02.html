@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Link" content="&lt;./colorWindow.html&gt;; rel=prefetch">
+  <link rel="preload" href="../css/styles.css" as="style">
+  <link rel="prefetch" href="./colorWindow.html" as="document">
   <link rel="stylesheet" href="../css/styles.css">
   <script defer src="../js/myAPI/random.js"></script>
   <script defer src="../js/exercici02.js"></script>
@@ -30,6 +33,7 @@
     </div>
   </nav>
   <main>
+    <iframe id="preloadFrame" src="./colorWindow.html" style="display: none;"></iframe>
     <!-- ---------------------- LAST GAME --------------------- -->
     <div class="last-game-stats">
       <h4 class="last-game-stats__title">
@@ -64,9 +68,9 @@
         </p>
       </div>
 
-      <button class="new-game__btn">NEW GAME</button>
+      <button class="new-game__btn">FINALIZAR</button>
 
-      <button class="retry__btn">RETRY</button>
+      <button class="retry__btn">JUGAR DE NUEVO</button>
     </div>
   </main>
 </body>
