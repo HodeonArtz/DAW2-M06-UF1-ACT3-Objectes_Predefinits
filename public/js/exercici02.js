@@ -16,12 +16,14 @@ let activeWindows = [],
   totalWindowsOpened = 0,
   firstClickedWindow = null;
 
+// >>=====>>====>>====#[<| Countdown |>]#====<<====<<=====<<
+
 let countDownInterval = null;
 
-// >>=====>>====>>====#[<| Game sets / main.js |>]#====<<====<<=====<<
-startButton.addEventListener("click", startGame);
-endGameButton.addEventListener("click", endGame);
-retryButton.addEventListener("click", retryGame);
+function startCountDown() {
+  stopCountDown();
+  countDownInterval = setInterval(updateGameCountdown, 1000);
+}
 
 function updateGameCountdown() {
   // View countdown
@@ -38,6 +40,17 @@ function updateGameCountdown() {
   setEndScreen(false);
 }
 
+function stopCountDown() {
+  if (!countDownInterval) return;
+  clearInterval(countDownInterval);
+  countDownInterval = null;
+}
+
+// >>=====>>====>>====#[<| Game sets |>]#====<<====<<=====<<
+startButton.addEventListener("click", startGame);
+endGameButton.addEventListener("click", endGame);
+retryButton.addEventListener("click", retryGame);
+
 function startGame() {
   setGameScreen();
   countDownTime = gameTime;
@@ -48,17 +61,6 @@ function startGame() {
   }
 
   startCountDown();
-}
-
-function startCountDown() {
-  stopCountDown();
-  countDownInterval = setInterval(updateGameCountdown, 1000);
-}
-
-function stopCountDown() {
-  if (!countDownInterval) return;
-  clearInterval(countDownInterval);
-  countDownInterval = null;
 }
 
 function resetGame() {
