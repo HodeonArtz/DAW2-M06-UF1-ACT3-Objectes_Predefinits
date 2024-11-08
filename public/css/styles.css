@@ -15,6 +15,10 @@ button {
   background-color: unset;
 }
 
+.hidden {
+  display: none;
+}
+
 button.btn-play--red {
   background-color: #7a1515;
   color: white;
