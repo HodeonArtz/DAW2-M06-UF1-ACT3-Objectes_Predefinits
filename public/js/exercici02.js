@@ -6,45 +6,62 @@ const countDownElement = document.querySelector(".count-down"),
   retryButton = document.querySelector(".retry__btn"),
   windowCountElement = document.querySelector(".game-stats__window-count");
 
-const gameTime = 30,
-  windowWidthPx = 320,
-  windowHeightPx = 160,
-  backgroundColors = ["Amarillo", "Verde", "Cian", "Morado"];
+const gameTime = 30;
 
 let activeWindows = [],
   countDownTime = gameTime,
   totalWindowsOpened = 0,
   firstClickedWindow = null;
 
+const gameState = {
+  activeWindows: [],
+};
+
 // >>=====>>====>>====#[<| Countdown |>]#====<<====<<=====<<
 
-const countdown = {
-  interval: null,
-  remainingTime: gameTime,
-  stop: () => {
-    if (countdown.interval) {
-      clearInterval(countdown.interval);
-      countdown.interval = null;
+class Countdown {
+  #interval = null;
+  #countdownTime = 0;
+  #remainingTime = 0;
+
+  constructor(countdownTime) {
+    this.#countdownTime = countdownTime;
+  }
+  stop() {
+    if (this.#interval) {
+      clearInterval(this.#interval);
+      this.#interval = null;
     }
-    countdown.remainingTime = gameTime;
-  },
-  start: (handleOnUpdate, handleOnEnd) => {
+    this.#remainingTime = this.#countdownTime;
+  }
+  start(handleOnUpdate, handleOnEnd) {
     const pastTime = Date.now();
-    countdown.interval = setInterval(() => {
-      const currentTime = Date.now();
-      countdown.remainingTime = +(
-        gameTime -
+    this.#interval = setInterval(() => {
+      const currentTime = Date.now(),
+        countdownInfo = {
+          remainingTime: this.#remainingTime.toFixed(2),
+          countdownTime: this.#countdownTime,
+        };
+
+      this.#remainingTime = +(
+        this.#countdownTime -
         (currentTime - pastTime) / 1000
       ).toFixed(2);
 
-      handleOnUpdate();
-      if (countdown.remainingTime >= 0) return;
+      handleOnUpdate(countdownInfo);
+
+      if (this.#remainingTime >= 0) return;
+
       handleOnEnd();
-      countdown.stop();
+      this.stop();
     }, 50);
-  },
-  getSeconds: () => countdown.remainingTime.toFixed(2),
-};
+  }
+  get remainingTime() {
+    return this.#remainingTime.toFixed(2);
+  }
+}
+
+const countdown = new Countdown(30);
 
 // >>=====>>====>>====#[<| Game sets |>]#====<<====<<=====<<
 startButton.addEventListener("click", startGame);
@@ -54,14 +71,15 @@ retryButton.addEventListener("click", retryGame);
 function startGame() {
   setGameScreen();
 
-  countDownElement.textContent = countdown.getSeconds();
+  countDownElement.textContent = countdown.remainingTime;
 
   for (let i = 0; i < 5; i++) {
     new ColoredWindow(handleWindowClick);
   }
 
   countdown.start(
-    () => (countDownElement.textContent = countdown.getSeconds()),
+    (countdownInfo) =>
+      (countDownElement.textContent = countdownInfo.remainingTime),
     () => {
       closeWindows();
       windowCountElement.textContent = totalWindowsOpened;
@@ -71,11 +89,10 @@ function startGame() {
 }
 
 function resetGame() {
-  countDownTime = gameTime;
-  countDownElement.textContent = countDownTime;
+  countdown.stop();
+  countDownElement.textContent = countdown.remainingTime;
   totalWindowsOpened = 0;
   closeWindows();
-  countdown.stop();
 }
 
 function endGame() {
@@ -139,7 +156,7 @@ class ColoredWindow {
     handleOnClick,
     centered = false,
     color = ColoredWindow.#WINDOW_COLORS[
-      Math.round(random(0, backgroundColors.length - 1))
+      Math.round(random(0, ColoredWindow.#WINDOW_COLORS.length - 1))
     ]
   ) {
     if (centered) {
@@ -167,7 +184,7 @@ class ColoredWindow {
   setRandomColor() {
     this.setColor(
       ColoredWindow.#WINDOW_COLORS[
-        Math.round(random(0, backgroundColors.length - 1))
+        Math.round(random(0, ColoredWindow.#WINDOW_COLORS.length - 1))
       ]
     );
   }
