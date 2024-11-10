@@ -18,33 +18,33 @@ let activeWindows = [],
 
 // >>=====>>====>>====#[<| Countdown |>]#====<<====<<=====<<
 
-let countDownInterval = null;
+const countdown = {
+  interval: null,
+  remainingTime: gameTime,
+  stop: () => {
+    if (countdown.interval) {
+      clearInterval(countdown.interval);
+      countdown.interval = null;
+    }
+    countdown.remainingTime = gameTime;
+  },
+  start: (handleOnUpdate, handleOnEnd) => {
+    const pastTime = Date.now();
+    countdown.interval = setInterval(() => {
+      const currentTime = Date.now();
+      countdown.remainingTime = +(
+        gameTime -
+        (currentTime - pastTime) / 1000
+      ).toFixed(2);
 
-function startCountDown() {
-  stopCountDown();
-  countDownInterval = setInterval(updateGameCountdown, 1000);
-}
-
-function updateGameCountdown() {
-  // View countdown
-  countDownElement.textContent = --countDownTime;
-
-  // Stop countdown
-  if (countDownTime > 0) return;
-
-  closeWindows();
-
-  stopCountDown();
-
-  windowCountElement.textContent = totalWindowsOpened;
-  setEndScreen(false);
-}
-
-function stopCountDown() {
-  if (!countDownInterval) return;
-  clearInterval(countDownInterval);
-  countDownInterval = null;
-}
+      handleOnUpdate();
+      if (countdown.remainingTime >= 0) return;
+      handleOnEnd();
+      countdown.stop();
+    }, 50);
+  },
+  getSeconds: () => countdown.remainingTime.toFixed(2),
+};
 
 // >>=====>>====>>====#[<| Game sets |>]#====<<====<<=====<<
 startButton.addEventListener("click", startGame);
@@ -53,14 +53,21 @@ retryButton.addEventListener("click", retryGame);
 
 function startGame() {
   setGameScreen();
-  countDownTime = gameTime;
-  countDownElement.textContent = countDownTime;
+
+  countDownElement.textContent = countdown.getSeconds();
 
   for (let i = 0; i < 5; i++) {
     openNewColorWindow();
   }
 
-  startCountDown();
+  countdown.start(
+    () => (countDownElement.textContent = countdown.getSeconds()),
+    () => {
+      closeWindows();
+      windowCountElement.textContent = totalWindowsOpened;
+      setEndScreen(false);
+    }
+  );
 }
 
 function resetGame() {
@@ -68,7 +75,7 @@ function resetGame() {
   countDownElement.textContent = countDownTime;
   totalWindowsOpened = 0;
   closeWindows();
-  stopCountDown();
+  countdown.stop();
 }
 
 function endGame() {
@@ -204,7 +211,7 @@ function handleWindowClick(clickedWindow) {
     resetClick();
     if (!activeWindows.length) {
       setEndScreen(true);
-      stopCountDown();
+      countdown.stop();
       windowCountElement.textContent = totalWindowsOpened;
     }
 
