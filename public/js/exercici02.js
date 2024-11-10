@@ -57,7 +57,7 @@ function startGame() {
   countDownElement.textContent = countdown.getSeconds();
 
   for (let i = 0; i < 5; i++) {
-    openNewColorWindow();
+    new ColoredWindow(handleWindowClick);
   }
 
   countdown.start(
@@ -126,55 +126,97 @@ function setEndScreen(isPlayerWon) {
 
 //=====/----/====||====#[<| Game logic |>]#====||====/----/=====//
 
-function setRandomBgColor(
-  colorWindow,
-  color = backgroundColors[Math.round(random(0, backgroundColors.length - 1))]
-) {
-  colorWindow.window.top.document.title = color;
-  colorWindow.document.body.className = `color-window ${color.toLowerCase()}`;
-  // setting this class automatically changes window's color
-  colorWindow.document.querySelector(".color-name").textContent = color;
-}
+class ColoredWindow {
+  static #WINDOW_COLORS = ["Amarillo", "Verde", "Cian", "Morado"];
+  #WIDTH_PX = 320;
+  #HEIGHT_PX = 160;
 
-function openNewColorWindow(
-  posX = Math.round(random(0, screen.width)),
-  posY = Math.round(random(0, screen.height))
-) {
-  const newWindow = window.open(
-    "./colorWindow.html",
-    "_blank",
-    `fullscreen=no,height=${windowHeightPx},width=${windowWidthPx},resizable=no,titlebar=yes,
-    left=${posX - windowWidthPx / 2},top=${posY - windowHeightPx / 2}`
-  );
-  totalWindowsOpened++;
-  activeWindows.push(newWindow);
-  try {
-    newWindow.addEventListener("load", () => {
-      setRandomBgColor(newWindow);
-      newWindow.addEventListener("click", () => {
-        // mostrar animación de seleccionado
-        if (newWindow.document.hasFocus) handleWindowClick(newWindow);
-      });
-    });
-  } catch (error) {
-    alert(
-      "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
-    );
-    console.error(
-      "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
-    );
-    console.error(error);
+  handleOnClick;
+  #windowReference = null;
+  #color;
+
+  constructor(
+    handleOnClick,
+    centered = false,
+    color = ColoredWindow.#WINDOW_COLORS[
+      Math.round(random(0, backgroundColors.length - 1))
+    ]
+  ) {
+    if (centered) {
+      this.posX = 50;
+      this.poxY = 50;
+    }
+    if (!centered) {
+      this.posX = Math.round(random(0, screen.width));
+      this.posY = Math.round(random(0, screen.height));
+    }
+    this.handleOnClick = handleOnClick;
+    this.#color = color;
+    this.open();
   }
-}
+  setColor(color) {
+    if (color !== this.#color) this.#color = color;
 
-function closeColorWindow(...colorWindows) {
-  colorWindows.forEach((colorWindow) => {
-    console.log(colorWindow);
-    colorWindow.close();
-    activeWindows = activeWindows.filter(
-      (openedWindow) => openedWindow !== colorWindow
+    if (this.#windowReference) {
+      this.#windowReference.window.top.document.title = this.color;
+      this.#windowReference.document.body.className = `color-window ${this.color.toLowerCase()}`;
+      this.#windowReference.document.querySelector(".color-name").textContent =
+        this.color;
+    }
+  }
+  setRandomColor() {
+    this.setColor(
+      ColoredWindow.#WINDOW_COLORS[
+        Math.round(random(0, backgroundColors.length - 1))
+      ]
     );
-  });
+  }
+  open() {
+    this.close();
+    this.#windowReference = window.open(
+      "./colorWindow.html",
+      "_blank",
+      `fullscreen=no,height=${this.#HEIGHT_PX},width=${
+        this.#WIDTH_PX
+      },resizable=no,titlebar=yes,
+    left=${this.posX - this.#WIDTH_PX / 2},top=${
+        this.posY - this.#HEIGHT_PX / 2
+      }`
+    );
+
+    totalWindowsOpened++; // Refactor later
+
+    try {
+      this.#windowReference.addEventListener("load", () => {
+        this.setColor(this.color);
+        this.#windowReference.addEventListener("click", () => {
+          if (this.#windowReference.document.hasFocus) this.handleOnClick(this);
+        });
+      });
+    } catch (error) {
+      alert(
+        "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
+      );
+      console.error(
+        "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
+      );
+      console.error(error);
+    }
+
+    activeWindows.push(this); // Refactor later
+  }
+  close() {
+    if (!this.#windowReference) return;
+    this.#windowReference.close();
+    this.#windowReference = null;
+
+    activeWindows = activeWindows.filter(
+      (openedWindow) => openedWindow !== this
+    ); // Refactor later
+  }
+  get color() {
+    return this.#color;
+  }
 }
 
 function closeWindows() {
@@ -194,10 +236,8 @@ function handleWindowClick(clickedWindow) {
     return;
   }
 
-  const firstColorName =
-      firstClickedWindow.document.querySelector(".color-name").textContent,
-    secondColorName =
-      clickedWindow.document.querySelector(".color-name").textContent;
+  const firstColorName = firstClickedWindow.color,
+    secondColorName = clickedWindow.color;
 
   if (firstColorName !== secondColorName) {
     console.log("Second click: colors are not the same");
@@ -207,7 +247,8 @@ function handleWindowClick(clickedWindow) {
 
   if (firstClickedWindow !== clickedWindow) {
     console.log("Second click: windows are different");
-    closeColorWindow(firstClickedWindow, clickedWindow);
+    firstClickedWindow.close();
+    clickedWindow.close();
     resetClick();
     if (!activeWindows.length) {
       setEndScreen(true);
@@ -218,10 +259,7 @@ function handleWindowClick(clickedWindow) {
     return;
   }
   console.log("Second click: same window clicked");
-  const newRandomColor = backgroundColors.filter(
-    (color) => color != secondColorName.trim()
-  )[Math.round(random(0, backgroundColors.length - 2))];
-  setRandomBgColor(clickedWindow, newRandomColor);
-  openNewColorWindow();
+  clickedWindow.setRandomColor();
+  new ColoredWindow(handleWindowClick);
   resetClick();
 }
