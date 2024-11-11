@@ -58,6 +58,10 @@ const gameState = {
   countdown: new Countdown(30),
   totalWindowsOpened: 0,
   firstClickedWindow: null,
+  openNewWindow: (handleOnClick, centered = false) => {
+    gameState.activeWindows.push(new ColoredWindow(handleOnClick, centered));
+    gameState.totalWindowsOpened++;
+  },
   resetClick: () => {
     gameState.firstClickedWindow = null;
   },
@@ -69,7 +73,7 @@ const gameState = {
   resetGame: () => {
     gameState.firstClickedWindow = gameState.countdown.stop();
     gameState.totalWindowsOpened = 0;
-    gameState.closeWindows(); // refactor later
+    gameState.closeWindows();
   },
 };
 
@@ -82,9 +86,9 @@ function startGame() {
   setGameScreen();
 
   countDownElement.textContent = gameState.countdown.remainingTime;
-
-  for (let i = 0; i < 5; i++) {
-    new ColoredWindow(handleWindowClick);
+  gameState.openNewWindow(handleWindowClick, true);
+  for (let i = 0; i < 4; i++) {
+    gameState.openNewWindow(handleWindowClick);
   }
 
   gameState.countdown.start(
@@ -163,8 +167,8 @@ class ColoredWindow {
     ]
   ) {
     if (centered) {
-      this.posX = 50;
-      this.poxY = 50;
+      this.posX = window.screen.width / 2;
+      this.posY = window.screen.height / 2;
     }
     if (!centered) {
       this.posX = Math.round(random(0, screen.width));
@@ -204,8 +208,6 @@ class ColoredWindow {
       }`
     );
 
-    gameState.totalWindowsOpened++; // Refactor later
-
     try {
       this.#windowReference.addEventListener("load", () => {
         this.setColor(this.color);
@@ -222,8 +224,6 @@ class ColoredWindow {
       );
       console.error(error);
     }
-
-    gameState.activeWindows.push(this); // Refactor later
   }
   close() {
     if (!this.#windowReference) return;
@@ -270,6 +270,6 @@ function handleWindowClick(clickedWindow) {
   }
   console.log("Second click: same window clicked");
   clickedWindow.setRandomColor();
-  new ColoredWindow(handleWindowClick);
+  gameState.openNewWindow(handleWindowClick);
   gameState.resetClick();
 }
