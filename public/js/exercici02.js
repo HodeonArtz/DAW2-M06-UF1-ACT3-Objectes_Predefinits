@@ -1,11 +1,5 @@
 "use strict";
 
-const countDownElement = document.querySelector(".count-down"),
-  startButton = document.querySelector(".start__btn"),
-  endGameButton = document.querySelector(".end-game__btn"),
-  retryButton = document.querySelector(".retry__btn"),
-  windowCountElement = document.querySelector(".game-stats__window-count");
-
 // >>=====>>====>>====#[<| Countdown |>]#====<<====<<=====<<
 
 class Countdown {
@@ -170,73 +164,91 @@ const gameState = {
 
 // >>=====>>====>>====#[<| View |>]#====<<====<<=====<<
 
-const startScreenElement = document.querySelector(".start"),
-  gameScreenElement = document.querySelector(".game"),
-  endScreenElement = document.querySelector(".end"),
-  gameResultVerbEl = endScreenElement.querySelector(".msg__verb"),
-  gameMsgElement = endScreenElement.querySelector(".msg__text");
-
-function hideScreens() {
-  startScreenElement.classList.add("hidden");
-  gameScreenElement.classList.add("hidden");
-  endScreenElement.classList.add("hidden");
-}
-
-function setStartScreen() {
-  hideScreens();
-  startScreenElement.classList.remove("hidden");
-}
-
-function setGameScreen() {
-  hideScreens();
-  gameScreenElement.classList.remove("hidden");
-}
-
-function setEndScreen(isPlayerWon) {
-  hideScreens();
-  endScreenElement.classList.remove("hidden");
-  gameResultVerbEl.textContent = isPlayerWon ? "ganado" : "perdido";
-  gameMsgElement.textContent = isPlayerWon
-    ? "¡Enhorabuena!"
-    : "¡Inténtalo otra vez!";
-  if (isPlayerWon) endGameButton.classList.remove("hidden");
-  if (!isPlayerWon) endGameButton.classList.add("hidden");
-}
+const view = {
+  elements: {
+    countdown: document.querySelector(".count-down"),
+    windowTotalCount: document.querySelector(".game-stats__window-count"),
+    resultVerb: document.querySelector(".msg__verb"),
+    endMessage: document.querySelector(".msg__text"),
+    screen: {
+      start: document.querySelector(".start"),
+      game: document.querySelector(".game"),
+      end: document.querySelector(".end"),
+    },
+    button: {
+      start: document.querySelector(".start__btn"),
+      end: document.querySelector(".end-game__btn"),
+      retry: document.querySelector(".retry__btn"),
+      handleOnClickStart: (handleOnClick) =>
+        view.elements.button.start.addEventListener("click", handleOnClick),
+      handleOnClickEnd: (handleOnClick) =>
+        view.elements.button.end.addEventListener("click", handleOnClick),
+      handleOnClickRetry: (handleOnClick) =>
+        view.elements.button.retry.addEventListener("click", handleOnClick),
+    },
+  },
+  hideAllScreens: () => {
+    Object.values(view.elements.screen).forEach((screen) => {
+      screen.classList.add("hidden");
+    });
+  },
+  setStartScreen: () => {
+    view.hideAllScreens();
+    view.elements.screen.start.classList.remove("hidden");
+  },
+  setGameScreen: () => {
+    view.hideAllScreens();
+    view.elements.screen.game.classList.remove("hidden");
+  },
+  setEndScreen: (isGameWon) => {
+    view.hideAllScreens();
+    view.elements.screen.end.classList.remove("hidden");
+    view.elements.resultVerb.textContent = isGameWon ? "ganado" : "perdido";
+    view.elements.endMessage.textContent = isGameWon
+      ? "¡Enhorabuena!"
+      : "¡Inténtalo otra vez!";
+    if (isGameWon) view.elements.button.end.classList.remove("hidden");
+    if (!isGameWon) view.elements.button.end.add("hidden");
+  },
+  setCountdown: (countdownTime) =>
+    (view.elements.countdown.textContent = countdownTime),
+  setOpenedWindowsCount: (count) =>
+    (view.elements.windowTotalCount.textContent = count),
+};
 
 // >>=====>>====>>====#[<| Gamelogic |>]#====<<====<<=====<<
 
-startButton.addEventListener("click", startGame);
-endGameButton.addEventListener("click", endGame);
-retryButton.addEventListener("click", retryGame);
+view.elements.button.handleOnClickStart(startGame);
+view.elements.button.handleOnClickEnd(endGame);
+view.elements.button.handleOnClickRetry(retryGame);
 
 function startGame() {
-  setGameScreen();
+  view.setGameScreen();
 
-  countDownElement.textContent = gameState.countdown.remainingTime;
+  view.setCountdown(gameState.countdown.remainingTime);
   gameState.openNewWindow(handleWindowClick, true);
   for (let i = 0; i < 4; i++) {
     gameState.openNewWindow(handleWindowClick);
   }
 
   gameState.countdown.start(
-    (countdownInfo) =>
-      (countDownElement.textContent = countdownInfo.remainingTime),
+    (countdownInfo) => view.setCountdown(countdownInfo.remainingTime),
     () => {
       gameState.closeWindows();
-      windowCountElement.textContent = gameState.totalWindowsOpened;
-      setEndScreen(false);
+      view.setOpenedWindowsCount(gameState.totalWindowsOpened);
+      view.setEndScreen(false);
     }
   );
 }
 
 function endGame() {
   gameState.resetGame();
-  setStartScreen();
+  view.setStartScreen();
 }
 
 function retryGame() {
   gameState.resetGame();
-  setGameScreen();
+  view.setGameScreen();
   startGame();
 }
 
@@ -262,9 +274,9 @@ function handleWindowClick(clickedWindow) {
     clickedWindow.close();
     gameState.resetClick();
     if (!gameState.activeWindows.length) {
-      setEndScreen(true);
+      view.setEndScreen(true);
       gameState.countdown.stop();
-      windowCountElement.textContent = gameState.totalWindowsOpened;
+      view.setOpenedWindowsCount(gameState.totalWindowsOpened);
     }
 
     return;
