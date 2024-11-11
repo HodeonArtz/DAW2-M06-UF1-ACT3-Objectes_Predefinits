@@ -58,13 +58,18 @@ const gameState = {
   countdown: new Countdown(30),
   totalWindowsOpened: 0,
   firstClickedWindow: null,
+  resetClick: () => {
+    gameState.firstClickedWindow = null;
+  },
+  closeWindows: () => {
+    gameState.activeWindows.forEach((colorWindow) => colorWindow.close());
+    gameState.activeWindows = [];
+    gameState.resetClick();
+  },
   resetGame: () => {
     gameState.firstClickedWindow = gameState.countdown.stop();
     gameState.totalWindowsOpened = 0;
-    closeWindows(); // refactor later
-  },
-  resetClick: () => {
-    gameState.firstClickedWindow = null;
+    gameState.closeWindows(); // refactor later
   },
 };
 
@@ -86,7 +91,7 @@ function startGame() {
     (countdownInfo) =>
       (countDownElement.textContent = countdownInfo.remainingTime),
     () => {
-      closeWindows();
+      gameState.closeWindows();
       windowCountElement.textContent = gameState.totalWindowsOpened;
       setEndScreen(false);
     }
@@ -232,12 +237,6 @@ class ColoredWindow {
   get color() {
     return this.#color;
   }
-}
-
-function closeWindows() {
-  gameState.activeWindows.forEach((colorWindow) => colorWindow.close());
-  gameState.activeWindows = [];
-  gameState.resetClick();
 }
 
 function handleWindowClick(clickedWindow) {
