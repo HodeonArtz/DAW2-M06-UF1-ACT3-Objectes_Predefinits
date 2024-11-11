@@ -51,104 +51,7 @@ class Countdown {
   }
 }
 
-// >>=====>>====>>====#[<| Game State |>]#====<<====<<=====<<
-
-const gameState = {
-  activeWindows: [],
-  countdown: new Countdown(30),
-  totalWindowsOpened: 0,
-  firstClickedWindow: null,
-  openNewWindow: (handleOnClick, centered = false) => {
-    gameState.activeWindows.push(new ColoredWindow(handleOnClick, centered));
-    gameState.totalWindowsOpened++;
-  },
-  resetClick: () => {
-    gameState.firstClickedWindow = null;
-  },
-  closeWindows: () => {
-    gameState.activeWindows.forEach((colorWindow) => colorWindow.close());
-    gameState.activeWindows = [];
-    gameState.resetClick();
-  },
-  resetGame: () => {
-    gameState.firstClickedWindow = gameState.countdown.stop();
-    gameState.totalWindowsOpened = 0;
-    gameState.closeWindows();
-  },
-};
-
-// >>=====>>====>>====#[<| Game sets |>]#====<<====<<=====<<
-startButton.addEventListener("click", startGame);
-endGameButton.addEventListener("click", endGame);
-retryButton.addEventListener("click", retryGame);
-
-function startGame() {
-  setGameScreen();
-
-  countDownElement.textContent = gameState.countdown.remainingTime;
-  gameState.openNewWindow(handleWindowClick, true);
-  for (let i = 0; i < 4; i++) {
-    gameState.openNewWindow(handleWindowClick);
-  }
-
-  gameState.countdown.start(
-    (countdownInfo) =>
-      (countDownElement.textContent = countdownInfo.remainingTime),
-    () => {
-      gameState.closeWindows();
-      windowCountElement.textContent = gameState.totalWindowsOpened;
-      setEndScreen(false);
-    }
-  );
-}
-
-function endGame() {
-  gameState.resetGame();
-  setStartScreen();
-}
-
-function retryGame() {
-  gameState.resetGame();
-  setGameScreen();
-  startGame();
-}
-
-// >>=====>>====>>====#[<| Screens |>]#====<<====<<=====<<
-
-const startScreenElement = document.querySelector(".start"),
-  gameScreenElement = document.querySelector(".game"),
-  endScreenElement = document.querySelector(".end"),
-  gameResultVerbEl = endScreenElement.querySelector(".msg__verb"),
-  gameMsgElement = endScreenElement.querySelector(".msg__text");
-
-function hideScreens() {
-  startScreenElement.classList.add("hidden");
-  gameScreenElement.classList.add("hidden");
-  endScreenElement.classList.add("hidden");
-}
-
-function setStartScreen() {
-  hideScreens();
-  startScreenElement.classList.remove("hidden");
-}
-
-function setGameScreen() {
-  hideScreens();
-  gameScreenElement.classList.remove("hidden");
-}
-
-function setEndScreen(isPlayerWon) {
-  hideScreens();
-  endScreenElement.classList.remove("hidden");
-  gameResultVerbEl.textContent = isPlayerWon ? "ganado" : "perdido";
-  gameMsgElement.textContent = isPlayerWon
-    ? "¡Enhorabuena!"
-    : "¡Inténtalo otra vez!";
-  if (isPlayerWon) endGameButton.classList.remove("hidden");
-  if (!isPlayerWon) endGameButton.classList.add("hidden");
-}
-
-//=====/----/====||====#[<| Game logic |>]#====||====/----/=====//
+//=====/----/====||====#[<| ColoredWindow |>]#====||====/----/=====//
 
 class ColoredWindow {
   static #WINDOW_COLORS = ["Amarillo", "Verde", "Cian", "Morado"];
@@ -237,6 +140,104 @@ class ColoredWindow {
   get color() {
     return this.#color;
   }
+}
+
+// >>=====>>====>>====#[<| Game State |>]#====<<====<<=====<<
+
+const gameState = {
+  activeWindows: [],
+  countdown: new Countdown(30),
+  totalWindowsOpened: 0,
+  firstClickedWindow: null,
+  openNewWindow: (handleOnClick, centered = false) => {
+    gameState.activeWindows.push(new ColoredWindow(handleOnClick, centered));
+    gameState.totalWindowsOpened++;
+  },
+  resetClick: () => {
+    gameState.firstClickedWindow = null;
+  },
+  closeWindows: () => {
+    gameState.activeWindows.forEach((colorWindow) => colorWindow.close());
+    gameState.activeWindows = [];
+    gameState.resetClick();
+  },
+  resetGame: () => {
+    gameState.firstClickedWindow = gameState.countdown.stop();
+    gameState.totalWindowsOpened = 0;
+    gameState.closeWindows();
+  },
+};
+
+// >>=====>>====>>====#[<| View |>]#====<<====<<=====<<
+
+const startScreenElement = document.querySelector(".start"),
+  gameScreenElement = document.querySelector(".game"),
+  endScreenElement = document.querySelector(".end"),
+  gameResultVerbEl = endScreenElement.querySelector(".msg__verb"),
+  gameMsgElement = endScreenElement.querySelector(".msg__text");
+
+function hideScreens() {
+  startScreenElement.classList.add("hidden");
+  gameScreenElement.classList.add("hidden");
+  endScreenElement.classList.add("hidden");
+}
+
+function setStartScreen() {
+  hideScreens();
+  startScreenElement.classList.remove("hidden");
+}
+
+function setGameScreen() {
+  hideScreens();
+  gameScreenElement.classList.remove("hidden");
+}
+
+function setEndScreen(isPlayerWon) {
+  hideScreens();
+  endScreenElement.classList.remove("hidden");
+  gameResultVerbEl.textContent = isPlayerWon ? "ganado" : "perdido";
+  gameMsgElement.textContent = isPlayerWon
+    ? "¡Enhorabuena!"
+    : "¡Inténtalo otra vez!";
+  if (isPlayerWon) endGameButton.classList.remove("hidden");
+  if (!isPlayerWon) endGameButton.classList.add("hidden");
+}
+
+// >>=====>>====>>====#[<| Gamelogic |>]#====<<====<<=====<<
+
+startButton.addEventListener("click", startGame);
+endGameButton.addEventListener("click", endGame);
+retryButton.addEventListener("click", retryGame);
+
+function startGame() {
+  setGameScreen();
+
+  countDownElement.textContent = gameState.countdown.remainingTime;
+  gameState.openNewWindow(handleWindowClick, true);
+  for (let i = 0; i < 4; i++) {
+    gameState.openNewWindow(handleWindowClick);
+  }
+
+  gameState.countdown.start(
+    (countdownInfo) =>
+      (countDownElement.textContent = countdownInfo.remainingTime),
+    () => {
+      gameState.closeWindows();
+      windowCountElement.textContent = gameState.totalWindowsOpened;
+      setEndScreen(false);
+    }
+  );
+}
+
+function endGame() {
+  gameState.resetGame();
+  setStartScreen();
+}
+
+function retryGame() {
+  gameState.resetGame();
+  setGameScreen();
+  startGame();
 }
 
 function handleWindowClick(clickedWindow) {
