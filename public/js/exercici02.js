@@ -1,220 +1,361 @@
 "use strict";
 
-const countDownElement = document.querySelector(".count-down"),
-  startButton = document.querySelector(".start__btn"),
-  endGameButton = document.querySelector(".end-game__btn"),
-  retryButton = document.querySelector(".retry__btn"),
-  windowCountElement = document.querySelector(".game-stats__window-count");
-
-const gameTime = 30,
-  windowWidthPx = 320,
-  windowHeightPx = 160,
-  backgroundColors = ["Amarillo", "Verde", "Cian", "Morado"];
-
-let activeWindows = [],
-  countDownTime = gameTime,
-  totalWindowsOpened = 0,
-  firstClickedWindow = null;
-
 // >>=====>>====>>====#[<| Countdown |>]#====<<====<<=====<<
 
-let countDownInterval = null;
+class Countdown {
+  #interval = null;
+  #countdownTime = 0;
+  #remainingTime = 0;
 
-function startCountDown() {
-  stopCountDown();
-  countDownInterval = setInterval(updateGameCountdown, 1000);
+  constructor(countdownTime) {
+    this.#countdownTime = countdownTime;
+    this.#remainingTime = countdownTime;
+  }
+  stop() {
+    if (this.#interval) {
+      clearInterval(this.#interval);
+      this.#interval = null;
+    }
+    this.#remainingTime = this.#countdownTime;
+  }
+  start(handleOnUpdate, handleOnEnd) {
+    const pastTime = Date.now();
+    this.#interval = setInterval(() => {
+      const currentTime = Date.now(),
+        countdownInfo = {
+          remainingTime: this.#remainingTime.toFixed(2),
+          countdownTime: this.#countdownTime,
+        };
+
+      this.#remainingTime = +(
+        this.#countdownTime -
+        (currentTime - pastTime) / 1000
+      ).toFixed(2);
+
+      handleOnUpdate(countdownInfo);
+
+      if (this.#remainingTime >= 0) return;
+
+      handleOnEnd();
+      this.stop();
+    }, 50);
+  }
+  get remainingTime() {
+    return this.#remainingTime.toFixed(2);
+  }
 }
 
-function updateGameCountdown() {
-  // View countdown
-  countDownElement.textContent = --countDownTime;
+//=====/----/====||====#[<| ColoredWindow |>]#====||====/----/=====//
 
-  // Stop countdown
-  if (countDownTime > 0) return;
+class ColoredWindow {
+  static #WINDOW_COLORS = ["Amarillo", "Verde", "Cian", "Morado"];
+  #WIDTH_PX = 320;
+  #HEIGHT_PX = 160;
 
-  closeWindows();
+  handleOnClick;
+  #windowReference = null;
+  #color;
 
-  stopCountDown();
+  constructor(
+    handleOnClick,
+    centered = false,
+    color = ColoredWindow.#WINDOW_COLORS[
+      Math.round(random(0, ColoredWindow.#WINDOW_COLORS.length - 1))
+    ]
+  ) {
+    if (centered) {
+      this.posX = window.screen.width / 2;
+      this.posY = window.screen.height / 2;
+    }
+    if (!centered) {
+      this.posX = Math.round(random(0, screen.width));
+      this.posY = Math.round(random(0, screen.height));
+    }
+    this.handleOnClick = handleOnClick;
+    this.#color = color;
+    this.open();
+  }
+  setColor(color) {
+    if (color !== this.#color) this.#color = color;
 
-  windowCountElement.textContent = totalWindowsOpened;
-  setEndScreen(false);
+    if (this.#windowReference) {
+      this.#windowReference.window.top.document.title = this.color;
+      this.#windowReference.document.body.className = `color-window ${this.color.toLowerCase()}`;
+      this.#windowReference.document.querySelector(".color-name").textContent =
+        this.color;
+    }
+  }
+  setRandomColor() {
+    this.setColor(
+      ColoredWindow.#WINDOW_COLORS[
+        Math.round(random(0, ColoredWindow.#WINDOW_COLORS.length - 1))
+      ]
+    );
+  }
+  open() {
+    this.close();
+    this.#windowReference = window.open(
+      "./colorWindow.html",
+      "_blank",
+      `fullscreen=no,height=${this.#HEIGHT_PX},width=${
+        this.#WIDTH_PX
+      },resizable=no,titlebar=yes,
+    left=${this.posX - this.#WIDTH_PX / 2},top=${
+        this.posY - this.#HEIGHT_PX / 2
+      }`
+    );
+
+    try {
+      this.#windowReference.addEventListener("load", () => {
+        this.setColor(this.color);
+        this.#windowReference.addEventListener("click", () => {
+          if (this.#windowReference.document.hasFocus) this.handleOnClick(this);
+        });
+      });
+    } catch (error) {
+      alert(
+        "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
+      );
+      console.error(
+        "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
+      );
+      console.error(error);
+    }
+  }
+  close() {
+    if (!this.#windowReference) return;
+    this.#windowReference.close();
+    this.#windowReference = null;
+
+    gameState.activeWindows = gameState.activeWindows.filter(
+      (openedWindow) => openedWindow !== this
+    ); // Refactor later
+  }
+  get color() {
+    return this.#color;
+  }
 }
 
-function stopCountDown() {
-  if (!countDownInterval) return;
-  clearInterval(countDownInterval);
-  countDownInterval = null;
+// >>=====>>====>>====#[<| Game State |>]#====<<====<<=====<<
+
+const gameState = {
+  activeWindows: [],
+  countdown: new Countdown(30),
+  totalWindowsOpened: 0,
+  firstClickedWindow: null,
+  isGameWon: false,
+  openNewWindow: (handleOnClick, centered = false) => {
+    gameState.activeWindows.push(new ColoredWindow(handleOnClick, centered));
+    gameState.totalWindowsOpened++;
+  },
+  resetClick: () => {
+    gameState.firstClickedWindow = null;
+  },
+  closeWindows: () => {
+    gameState.activeWindows.forEach((colorWindow) => colorWindow.close());
+    gameState.activeWindows = [];
+    gameState.resetClick();
+  },
+  resetGame: () => {
+    gameState.isGameWon = false;
+    gameState.firstClickedWindow = gameState.countdown.stop();
+    gameState.totalWindowsOpened = 0;
+    gameState.closeWindows();
+  },
+  setGameWon: () => (gameState.isGameWon = true),
+  getStats: () => {
+    return {
+      isGameWon: gameState.isGameWon,
+      totalWindowsOpened: gameState.totalWindowsOpened,
+    };
+  },
+};
+
+function setCookie(data, daysExpire) {
+  Object.entries(data)
+    .map(([key, value]) => `${key}=${value}`)
+    .forEach((dataString) => {
+      const dateExpirement = new Date();
+      dateExpirement.setTime(
+        dateExpirement.getTime() + daysExpire * 24 * 60 * 60 * 1000
+      );
+      document.cookie = `${dataString};expires=${dateExpirement.toUTCString()};path=/`;
+    });
+
+  // document.cookie = `${dataString}expires=${dateExpirement.toUTCString()};path=/`;
 }
 
-// >>=====>>====>>====#[<| Game sets |>]#====<<====<<=====<<
-startButton.addEventListener("click", startGame);
-endGameButton.addEventListener("click", endGame);
-retryButton.addEventListener("click", retryGame);
+function getCookieData() {
+  const cookieData = Object.assign(
+    {},
+    ...decodeURIComponent(document.cookie)
+      .split(";")
+      // .slice(0, -2)
+      .map((data) => {
+        const dataArr = data.split("=");
+        const dataObj = {};
+        dataObj[`${dataArr[0]}`] = dataArr[1];
+        return dataObj;
+      })
+  );
+  cookieData.totalWindowsOpened = +cookieData[" totalWindowsOpened"];
+  return cookieData;
+}
+
+// >>=====>>====>>====#[<| View |>]#====<<====<<=====<<
+
+const view = {
+  elements: {
+    countdown: document.querySelector(".count-down"),
+    windowTotalCount: document.querySelector(".game-stats__window-count"),
+    resultVerb: document.querySelector(".msg__verb"),
+    endMessage: document.querySelector(".msg__text"),
+    screen: {
+      start: document.querySelector(".start"),
+      game: document.querySelector(".game"),
+      end: document.querySelector(".end"),
+    },
+    button: {
+      start: document.querySelector(".start__btn"),
+      end: document.querySelector(".end-game__btn"),
+      retry: document.querySelector(".retry__btn"),
+      handleOnClickStart: (handleOnClick) =>
+        view.elements.button.start.addEventListener("click", handleOnClick),
+      handleOnClickEnd: (handleOnClick) =>
+        view.elements.button.end.addEventListener("click", handleOnClick),
+      handleOnClickRetry: (handleOnClick) =>
+        view.elements.button.retry.addEventListener("click", handleOnClick),
+    },
+    lastGame: {
+      box: document.querySelector(".last-game-stats"),
+      gameResult: document.querySelector(".stats__verb"),
+      windowTotalCount: document.querySelector(
+        ".stats__window-count .count-number"
+      ),
+    },
+  },
+  hideAllScreens: () => {
+    Object.values(view.elements.screen).forEach((screen) => {
+      screen.classList.add("hidden");
+    });
+  },
+  setStartScreen: () => {
+    view.hideAllScreens();
+    view.elements.screen.start.classList.remove("hidden");
+  },
+  setGameScreen: () => {
+    view.hideAllScreens();
+    view.elements.screen.game.classList.remove("hidden");
+  },
+  setEndScreen: (isGameWon) => {
+    view.hideAllScreens();
+    view.elements.screen.end.classList.remove("hidden");
+    view.elements.resultVerb.textContent = isGameWon ? "ganado" : "perdido";
+    view.elements.endMessage.textContent = isGameWon
+      ? "¡Enhorabuena!"
+      : "¡Inténtalo otra vez!";
+    if (isGameWon) view.elements.button.end.classList.remove("hidden");
+    if (!isGameWon) view.elements.button.end.classList.add("hidden");
+  },
+  setCountdown: (countdownTime) =>
+    (view.elements.countdown.textContent = countdownTime),
+  setOpenedWindowsCount: (count) =>
+    (view.elements.windowTotalCount.textContent = count),
+  setLastGameStats: (dataStats) => {
+    if (dataStats.isGameWon === undefined) {
+      view.elements.lastGame.box.classList.add("hidden");
+      return;
+    }
+    view.elements.lastGame.box.classList.remove("hidden");
+    view.elements.lastGame.gameResult.textContent =
+      dataStats.isGameWon == "true" ? "Ganada" : "Perdida";
+    view.elements.lastGame.windowTotalCount.textContent =
+      dataStats.totalWindowsOpened;
+  },
+};
+
+// >>=====>>====>>====#[<| Gamelogic |>]#====<<====<<=====<<
+
+view.elements.button.handleOnClickStart(startGame);
+view.elements.button.handleOnClickEnd(endGame);
+view.elements.button.handleOnClickRetry(retryGame);
+
+function setLastGameStats(dataStats) {
+  setCookie(dataStats, 365);
+}
+function readLastGameStats() {
+  if (!getCookieData().isGameWon) return;
+  view.setLastGameStats(getCookieData());
+}
+readLastGameStats();
 
 function startGame() {
-  setGameScreen();
-  countDownTime = gameTime;
-  countDownElement.textContent = countDownTime;
+  view.setGameScreen();
 
-  for (let i = 0; i < 5; i++) {
-    openNewColorWindow();
+  view.setCountdown(gameState.countdown.remainingTime);
+  gameState.openNewWindow(handleWindowClick, true);
+  for (let i = 0; i < 4; i++) {
+    gameState.openNewWindow(handleWindowClick);
   }
 
-  startCountDown();
-}
+  gameState.countdown.start(
+    (countdownInfo) => view.setCountdown(countdownInfo.remainingTime),
+    () => {
+      gameState.closeWindows();
+      view.setOpenedWindowsCount(gameState.totalWindowsOpened);
+      view.setEndScreen(false);
 
-function resetGame() {
-  countDownTime = gameTime;
-  countDownElement.textContent = countDownTime;
-  totalWindowsOpened = 0;
-  closeWindows();
-  stopCountDown();
+      setLastGameStats(gameState.getStats());
+      readLastGameStats();
+    }
+  );
 }
 
 function endGame() {
-  resetGame();
-  setStartScreen();
+  gameState.resetGame();
+  view.setStartScreen();
 }
 
 function retryGame() {
-  resetGame();
-  setGameScreen();
+  gameState.resetGame();
+  view.setGameScreen();
   startGame();
 }
 
-// >>=====>>====>>====#[<| Screens |>]#====<<====<<=====<<
-
-const startScreenElement = document.querySelector(".start"),
-  gameScreenElement = document.querySelector(".game"),
-  endScreenElement = document.querySelector(".end"),
-  gameResultVerbEl = endScreenElement.querySelector(".msg__verb"),
-  gameMsgElement = endScreenElement.querySelector(".msg__text");
-
-function hideScreens() {
-  startScreenElement.classList.add("hidden");
-  gameScreenElement.classList.add("hidden");
-  endScreenElement.classList.add("hidden");
-}
-
-function setStartScreen() {
-  hideScreens();
-  startScreenElement.classList.remove("hidden");
-}
-
-function setGameScreen() {
-  hideScreens();
-  gameScreenElement.classList.remove("hidden");
-}
-
-function setEndScreen(isPlayerWon) {
-  hideScreens();
-  endScreenElement.classList.remove("hidden");
-  gameResultVerbEl.textContent = isPlayerWon ? "ganado" : "perdido";
-  gameMsgElement.textContent = isPlayerWon
-    ? "¡Enhorabuena!"
-    : "¡Inténtalo otra vez!";
-  if (isPlayerWon) endGameButton.classList.remove("hidden");
-  if (!isPlayerWon) endGameButton.classList.add("hidden");
-}
-
-//=====/----/====||====#[<| Game logic |>]#====||====/----/=====//
-
-function setRandomBgColor(
-  colorWindow,
-  color = backgroundColors[Math.round(random(0, backgroundColors.length - 1))]
-) {
-  colorWindow.window.top.document.title = color;
-  colorWindow.document.body.className = `color-window ${color.toLowerCase()}`;
-  // setting this class automatically changes window's color
-  colorWindow.document.querySelector(".color-name").textContent = color;
-}
-
-function openNewColorWindow(
-  posX = Math.round(random(0, screen.width)),
-  posY = Math.round(random(0, screen.height))
-) {
-  const newWindow = window.open(
-    "./colorWindow.html",
-    "_blank",
-    `fullscreen=no,height=${windowHeightPx},width=${windowWidthPx},resizable=no,titlebar=yes,
-    left=${posX - windowWidthPx / 2},top=${posY - windowHeightPx / 2}`
-  );
-  totalWindowsOpened++;
-  activeWindows.push(newWindow);
-  try {
-    newWindow.addEventListener("load", () => {
-      setRandomBgColor(newWindow);
-      newWindow.addEventListener("click", () => {
-        // mostrar animación de seleccionado
-        if (newWindow.document.hasFocus) handleWindowClick(newWindow);
-      });
-    });
-  } catch (error) {
-    alert(
-      "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
-    );
-    console.error(
-      "Activa el permiso de ventanas emergentes para esta página para que funcione el juego."
-    );
-    console.error(error);
-  }
-}
-
-function closeColorWindow(...colorWindows) {
-  colorWindows.forEach((colorWindow) => {
-    console.log(colorWindow);
-    colorWindow.close();
-    activeWindows = activeWindows.filter(
-      (openedWindow) => openedWindow !== colorWindow
-    );
-  });
-}
-
-function closeWindows() {
-  activeWindows.forEach((colorWindow) => colorWindow.close());
-  activeWindows = [];
-  resetClick();
-}
-
-function resetClick() {
-  firstClickedWindow = null;
-}
-
 function handleWindowClick(clickedWindow) {
-  if (!firstClickedWindow) {
+  if (!gameState.firstClickedWindow) {
     console.log("First click");
-    firstClickedWindow = clickedWindow;
+    gameState.firstClickedWindow = clickedWindow;
     return;
   }
 
-  const firstColorName =
-      firstClickedWindow.document.querySelector(".color-name").textContent,
-    secondColorName =
-      clickedWindow.document.querySelector(".color-name").textContent;
+  const firstColorName = gameState.firstClickedWindow.color,
+    secondColorName = clickedWindow.color;
 
   if (firstColorName !== secondColorName) {
     console.log("Second click: colors are not the same");
-    resetClick();
+    gameState.resetClick();
     return;
   }
 
-  if (firstClickedWindow !== clickedWindow) {
+  if (gameState.firstClickedWindow !== clickedWindow) {
     console.log("Second click: windows are different");
-    closeColorWindow(firstClickedWindow, clickedWindow);
-    resetClick();
-    if (!activeWindows.length) {
-      setEndScreen(true);
-      stopCountDown();
-      windowCountElement.textContent = totalWindowsOpened;
-    }
+    gameState.firstClickedWindow.close();
+    clickedWindow.close();
+    gameState.resetClick();
 
+    if (!gameState.activeWindows.length) {
+      gameState.setGameWon();
+      view.setEndScreen(true);
+      setLastGameStats(gameState.getStats());
+      readLastGameStats();
+      gameState.countdown.stop();
+      view.setOpenedWindowsCount(gameState.totalWindowsOpened);
+    }
     return;
   }
   console.log("Second click: same window clicked");
-  const newRandomColor = backgroundColors.filter(
-    (color) => color != secondColorName.trim()
-  )[Math.round(random(0, backgroundColors.length - 2))];
-  setRandomBgColor(clickedWindow, newRandomColor);
-  openNewColorWindow();
-  resetClick();
+  clickedWindow.setRandomColor();
+  gameState.openNewWindow(handleWindowClick);
+  gameState.resetClick();
 }
