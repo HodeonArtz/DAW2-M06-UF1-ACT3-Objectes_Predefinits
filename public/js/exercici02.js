@@ -262,7 +262,7 @@ const view = {
   setOpenedWindowsCount: (count) =>
     (view.elements.windowTotalCount.textContent = count),
   setLastGameStats: (dataStats) => {
-    if (!dataStats.isGameWon) {
+    if (dataStats.isGameWon === undefined) {
       view.elements.lastGame.box.classList.add("hidden");
       return;
     }
