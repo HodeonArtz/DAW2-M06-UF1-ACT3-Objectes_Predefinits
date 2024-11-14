@@ -14,6 +14,12 @@ const gameState = {
     gameState.activeWindows.push(new ColoredWindow(handleOnClick, centered));
     gameState.totalWindowsOpened++;
   },
+  closeWindow: (coloredWindow) => {
+    gameState.activeWindows = gameState.activeWindows.filter(
+      (openedWindow) => openedWindow !== coloredWindow
+    );
+    coloredWindow.close();
+  },
   resetClick: () => {
     gameState.firstClickedWindow = null;
   },
@@ -69,22 +75,21 @@ function getCookieData() {
 }
 
 // >>=====>>====>>====#[<| View |>]#====<<====<<=====<<
+function getElement(selector) {
+  return document.querySelector(selector);
+}
 
 const view = {
   elements: {
-    countdown: document.querySelector(".count-down"),
-    windowTotalCount: document.querySelector(".game-stats__window-count"),
-    resultVerb: document.querySelector(".msg__verb"),
-    endMessage: document.querySelector(".msg__text"),
     screen: {
-      start: document.querySelector(".start"),
-      game: document.querySelector(".game"),
-      end: document.querySelector(".end"),
+      start: getElement(".start"),
+      game: getElement(".game"),
+      end: getElement(".end"),
     },
     button: {
-      start: document.querySelector(".start__btn"),
-      end: document.querySelector(".end-game__btn"),
-      retry: document.querySelector(".retry__btn"),
+      start: getElement(".start__btn"),
+      end: getElement(".end-game__btn"),
+      retry: getElement(".retry__btn"),
       handleOnClickStart: (handleOnClick) =>
         view.elements.button.start.addEventListener("click", handleOnClick),
       handleOnClickEnd: (handleOnClick) =>
@@ -93,11 +98,9 @@ const view = {
         view.elements.button.retry.addEventListener("click", handleOnClick),
     },
     lastGame: {
-      box: document.querySelector(".last-game-stats"),
-      gameResult: document.querySelector(".stats__verb"),
-      windowTotalCount: document.querySelector(
-        ".stats__window-count .count-number"
-      ),
+      box: getElement(".last-game-stats"),
+      gameResult: getElement(".stats__verb"),
+      windowTotalCount: getElement(".stats__window-count .count-number"),
     },
   },
   hideAllScreens: () => {
@@ -116,17 +119,17 @@ const view = {
   setEndScreen: (isGameWon) => {
     view.hideAllScreens();
     view.elements.screen.end.classList.remove("hidden");
-    view.elements.resultVerb.textContent = isGameWon ? "ganado" : "perdido";
-    view.elements.endMessage.textContent = isGameWon
+    getElement(".msg__verb").textContent = isGameWon ? "ganado" : "perdido";
+    getElement(".msg__text").textContent = isGameWon
       ? "¡Enhorabuena!"
       : "¡Inténtalo otra vez!";
     if (isGameWon) view.elements.button.end.classList.remove("hidden");
     if (!isGameWon) view.elements.button.end.classList.add("hidden");
   },
   setCountdown: (countdownTime) =>
-    (view.elements.countdown.textContent = countdownTime),
+    (getElement(".count-down").textContent = countdownTime),
   setOpenedWindowsCount: (count) =>
-    (view.elements.windowTotalCount.textContent = count),
+    (getElement(".game-stats__window-count").textContent = count),
   setLastGameStats: (dataStats) => {
     if (dataStats.isGameWon === undefined) {
       view.elements.lastGame.box.classList.add("hidden");
@@ -137,6 +140,23 @@ const view = {
       dataStats.isGameWon == "true" ? "Ganada" : "Perdida";
     view.elements.lastGame.windowTotalCount.textContent =
       dataStats.totalWindowsOpened;
+  },
+  setWindows: ({ firstWindow, secondWindow }) => {
+    const firstWindowEl = getElement(".first-window"),
+      secondWindowEl = getElement(".second-window");
+    firstWindowEl.classList.add("grayed");
+    firstWindowEl.textContent = "?";
+    secondWindowEl.classList.add("grayed");
+    secondWindowEl.textContent = "?";
+
+    if (firstWindow) {
+      firstWindowEl.classList.remove("grayed");
+      firstWindowEl.textContent = firstWindow.color;
+    }
+    if (secondWindow) {
+      secondWindowEl.classList.remove("grayed");
+      secondWindowEl.textContent = secondWindow.color;
+    }
   },
 };
 
@@ -156,6 +176,7 @@ function readLastGameStats() {
 readLastGameStats();
 
 function startGame() {
+  view.setWindows({});
   view.setGameScreen();
 
   view.setCountdown(gameState.countdown.remainingTime);
@@ -189,26 +210,36 @@ function retryGame() {
 }
 
 function handleWindowClick(clickedWindow) {
+  const firstClickedWindow = gameState.firstClickedWindow;
+
   if (!gameState.firstClickedWindow) {
     console.log("First click");
     gameState.firstClickedWindow = clickedWindow;
+    view.setWindows({
+      firstWindow: gameState.firstClickedWindow,
+    });
     return;
   }
-
-  const firstColorName = gameState.firstClickedWindow.color,
+  view.setWindows({
+    firstWindow: gameState.firstClickedWindow,
+    secondWindow: clickedWindow,
+  });
+  gameState.resetClick();
+  const firstColorName = firstClickedWindow.color,
     secondColorName = clickedWindow.color;
 
   if (firstColorName !== secondColorName) {
     console.log("Second click: colors are not the same");
-    gameState.resetClick();
     return;
   }
 
-  if (gameState.firstClickedWindow !== clickedWindow) {
+  if (firstClickedWindow !== clickedWindow) {
     console.log("Second click: windows are different");
-    gameState.firstClickedWindow.close();
-    clickedWindow.close();
-    gameState.resetClick();
+    gameState.closeWindow(firstClickedWindow);
+    gameState.closeWindow(clickedWindow);
+    gameState.activeWindows = gameState.activeWindows.filter(
+      (openedWindow) => openedWindow !== this
+    );
 
     if (!gameState.activeWindows.length) {
       gameState.setGameWon();
@@ -220,8 +251,7 @@ function handleWindowClick(clickedWindow) {
     }
     return;
   }
-  console.log("Second click: same window clicked");
   clickedWindow.setRandomColor();
+  console.log("Second click: same window clicked");
   gameState.openNewWindow(handleWindowClick);
-  gameState.resetClick();
 }

@@ -79,10 +79,6 @@ export default class ColoredWindow {
     if (!this.#windowReference) return;
     this.#windowReference.close();
     this.#windowReference = null;
-
-    gameState.activeWindows = gameState.activeWindows.filter(
-      (openedWindow) => openedWindow !== this
-    ); // Refactor later
   }
   get color() {
     return this.#color;
