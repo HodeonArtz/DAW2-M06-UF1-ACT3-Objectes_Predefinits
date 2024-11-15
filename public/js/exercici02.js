@@ -53,8 +53,6 @@ function setCookie(data, daysExpire) {
       );
       document.cookie = `${dataString};expires=${dateExpirement.toUTCString()};path=/`;
     });
-
-  // document.cookie = `${dataString}expires=${dateExpirement.toUTCString()};path=/`;
 }
 
 function getCookieData() {
@@ -81,6 +79,7 @@ function getElement(selector) {
 
 const view = {
   elements: {
+    main: getElement("main"),
     screen: {
       start: getElement(".start"),
       game: getElement(".game"),
@@ -111,13 +110,21 @@ const view = {
   setStartScreen: () => {
     view.hideAllScreens();
     view.elements.screen.start.classList.remove("hidden");
+    view.elements.main.className("");
   },
   setGameScreen: () => {
     view.hideAllScreens();
     view.elements.screen.game.classList.remove("hidden");
+    view.elements.main.classList.add("game-active");
   },
   setEndScreen: (isGameWon) => {
     view.hideAllScreens();
+
+    view.elements.screen.end.classList.remove("end--won");
+    view.elements.screen.end.classList.remove("end--lost");
+    view.elements.screen.end.classList.add(
+      `end--${isGameWon ? "won" : "lost"}`
+    );
     view.elements.screen.end.classList.remove("hidden");
     getElement(".msg__verb").textContent = isGameWon ? "ganado" : "perdido";
     getElement(".msg__text").textContent = isGameWon
@@ -125,6 +132,7 @@ const view = {
       : "¡Inténtalo otra vez!";
     if (isGameWon) view.elements.button.end.classList.remove("hidden");
     if (!isGameWon) view.elements.button.end.classList.add("hidden");
+    view.elements.main.className = "";
   },
   setCountdown: (countdownTime) =>
     (getElement(".count-down").textContent = countdownTime),
@@ -158,6 +166,16 @@ const view = {
       secondWindowEl.textContent = secondWindow.color;
     }
   },
+  setDefaultGameScreen: function () {
+    view.elements.screen.game.classList.remove("game--correct");
+    view.elements.screen.game.classList.remove("game--wrong");
+  },
+  setCorrectGameScreen: function () {
+    view.elements.screen.game.classList.add("game--correct");
+  },
+  setWrongGameScreen: function () {
+    view.elements.screen.game.classList.add("game--wrong");
+  },
 };
 
 // >>=====>>====>>====#[<| Gamelogic |>]#====<<====<<=====<<
@@ -169,6 +187,7 @@ view.elements.button.handleOnClickRetry(retryGame);
 function setLastGameStats(dataStats) {
   setCookie(dataStats, 365);
 }
+
 function readLastGameStats() {
   if (!getCookieData().isGameWon) return;
   view.setLastGameStats(getCookieData());
@@ -218,6 +237,7 @@ function handleWindowClick(clickedWindow) {
     view.setWindows({
       firstWindow: gameState.firstClickedWindow,
     });
+    view.setDefaultGameScreen();
     return;
   }
   view.setWindows({
@@ -230,6 +250,7 @@ function handleWindowClick(clickedWindow) {
 
   if (firstColorName !== secondColorName) {
     console.log("Second click: colors are not the same");
+    view.setWrongGameScreen();
     return;
   }
 
@@ -237,6 +258,7 @@ function handleWindowClick(clickedWindow) {
     console.log("Second click: windows are different");
     gameState.closeWindow(firstClickedWindow);
     gameState.closeWindow(clickedWindow);
+    view.setCorrectGameScreen();
     gameState.activeWindows = gameState.activeWindows.filter(
       (openedWindow) => openedWindow !== this
     );
