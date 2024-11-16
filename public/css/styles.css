@@ -127,12 +127,12 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden) p {
   font-size: 2rem;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game--correct {
-  animation-name: sudden-color-animationulyj6h3;
+  animation-name: sudden-color-animationulyj6wq;
   animation-duration: 1s;
   animation-timing-function: cubic-bezier(0.39, 0.02, 0.39, 0.03);
   animation-fill-mode: forwards;
 }
-@keyframes sudden-color-animationulyj6h3 {
+@keyframes sudden-color-animationulyj6wq {
   from {
     background-color: #cbffcf;
   }
@@ -141,12 +141,12 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden).game--correct {
   }
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game--wrong {
-  animation-name: sudden-color-animationulyj6hf;
+  animation-name: sudden-color-animationulyj6xg;
   animation-duration: 1s;
   animation-timing-function: cubic-bezier(0.39, 0.02, 0.39, 0.03);
   animation-fill-mode: forwards;
 }
-@keyframes sudden-color-animationulyj6hf {
+@keyframes sudden-color-animationulyj6xg {
   from {
     background-color: #ffc1c1;
   }
@@ -194,6 +194,28 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-window
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .game__message {
   height: 4rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).end .msg {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).end .msg__title {
+  font-size: 4rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).end .msg__verb {
+  text-decoration: underline;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).end .game-stats {
+  font-size: 1.25rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).end .game-stats__window-count {
+  font-weight: 800;
+  font-size: 1.5rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).end p {
+  font-weight: 200rem;
 }
 
 .hidden {

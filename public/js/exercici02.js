@@ -6,7 +6,7 @@ import ColoredWindow from "../js/exercici02/ColoredWindow.js";
 
 const gameState = {
   activeWindows: [],
-  countdown: new Countdown(30),
+  countdown: new Countdown(3),
   totalWindowsOpened: 0,
   firstClickedWindow: null,
   isGameWon: false,
