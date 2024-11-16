@@ -73,7 +73,7 @@ body.color-window[data-color=morado] .color-name {
   color: #29226c;
 }
 
-body.exercici02 {
+body.exercici02 main {
   font-family: "Cascadia Code", sans-serif;
 }
 body.exercici02 main.exercise-screen {
@@ -83,6 +83,9 @@ body.exercici02 main.exercise-screen {
   place-items: center;
   place-content: center;
   position: relative;
+}
+body.exercici02 main.exercise-screen h1 {
+  font-size: 4rem;
 }
 body.exercici02 main.exercise-screen > .last-game-stats {
   top: 0;
@@ -95,6 +98,12 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden) {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden) p {
+  font-size: 2rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows {
+  display: flex;
 }
 
 .hidden {
