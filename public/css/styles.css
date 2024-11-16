@@ -107,6 +107,7 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden) p {
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows {
   display: flex;
+  gap: 3rem;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows [data-color=amarillo] {
   background-color: #e6f122;
@@ -123,6 +124,15 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-window
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows [data-color=morado] {
   background-color: #9c95de;
   color: #29226c;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows > * {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 3rem;
+  width: 15rem;
+  height: 4.5rem;
 }
 
 .hidden {
