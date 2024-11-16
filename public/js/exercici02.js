@@ -80,6 +80,7 @@ function getElement(selector) {
 const view = {
   elements: {
     main: getElement("main"),
+    inGameMessage: getElement(".game__message"),
     screen: {
       start: getElement(".start"),
       game: getElement(".game"),
@@ -176,6 +177,9 @@ const view = {
   setWrongGameScreen: function () {
     view.elements.screen.game.classList.add("game--wrong");
   },
+  setInGameMessage: function (message) {
+    view.elements.inGameMessage.textContent = message;
+  },
 };
 
 // >>=====>>====>>====#[<| Gamelogic |>]#====<<====<<=====<<
@@ -232,7 +236,7 @@ function handleWindowClick(clickedWindow) {
   const firstClickedWindow = gameState.firstClickedWindow;
 
   if (!gameState.firstClickedWindow) {
-    console.log("First click");
+    view.setInGameMessage("Primer clic");
     gameState.firstClickedWindow = clickedWindow;
     view.setWindows({
       firstWindow: gameState.firstClickedWindow,
@@ -249,13 +253,13 @@ function handleWindowClick(clickedWindow) {
     secondColorName = clickedWindow.color;
 
   if (firstColorName !== secondColorName) {
-    console.log("Second click: colors are not the same");
+    view.setInGameMessage("Clica");
     view.setWrongGameScreen();
     return;
   }
 
   if (firstClickedWindow !== clickedWindow) {
-    console.log("Second click: windows are different");
+    view.setInGameMessage("Ventanas cerradas");
     gameState.closeWindow(firstClickedWindow);
     gameState.closeWindow(clickedWindow);
     view.setCorrectGameScreen();
@@ -274,6 +278,6 @@ function handleWindowClick(clickedWindow) {
     return;
   }
   clickedWindow.setRandomColor();
-  console.log("Second click: same window clicked");
+  view.setInGameMessage("Ambos clics de la misma ventana");
   gameState.openNewWindow(handleWindowClick);
 }
