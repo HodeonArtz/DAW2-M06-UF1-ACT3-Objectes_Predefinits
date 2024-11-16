@@ -155,15 +155,19 @@ const view = {
       secondWindowEl = getElement(".second-window");
     firstWindowEl.classList.add("grayed");
     firstWindowEl.textContent = "?";
+    firstWindowEl.dataset.color = "";
     secondWindowEl.classList.add("grayed");
     secondWindowEl.textContent = "?";
+    secondWindowEl.dataset.color = "";
 
     if (firstWindow) {
       firstWindowEl.classList.remove("grayed");
+      firstWindowEl.dataset.color = firstWindow.color.toLowerCase();
       firstWindowEl.textContent = firstWindow.color;
     }
     if (secondWindow) {
       secondWindowEl.classList.remove("grayed");
+      secondWindowEl.dataset.color = secondWindow.color.toLowerCase();
       secondWindowEl.textContent = secondWindow.color;
     }
   },

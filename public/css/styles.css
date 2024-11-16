@@ -87,6 +87,9 @@ body.exercici02 main.exercise-screen {
 body.exercici02 main.exercise-screen h1 {
   font-size: 4rem;
 }
+body.exercici02 main.exercise-screen h2 {
+  font-size: 3rem;
+}
 body.exercici02 main.exercise-screen > .last-game-stats {
   top: 0;
   left: 0;
@@ -104,6 +107,22 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden) p {
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows {
   display: flex;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows [data-color=amarillo] {
+  background-color: #e6f122;
+  color: #292b03;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows [data-color=verde] {
+  background-color: #87f7b4;
+  color: #0a8f3f;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows [data-color=cian] {
+  background-color: #57f4d5;
+  color: #065f4e;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows [data-color=morado] {
+  background-color: #9c95de;
+  color: #29226c;
 }
 
 .hidden {
