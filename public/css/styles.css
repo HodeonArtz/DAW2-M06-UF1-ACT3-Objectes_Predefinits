@@ -18,10 +18,6 @@ button {
   background-color: unset;
 }
 
-.hidden {
-  display: none;
-}
-
 body {
   width: 100%;
   height: 100vh;
@@ -52,38 +48,57 @@ body.color-window main {
   display: grid;
   place-items: center;
 }
-body.color-window.amarillo {
+body.color-window[data-color=amarillo] {
   background-color: #e6f122;
 }
-body.color-window.amarillo .color-name {
+body.color-window[data-color=amarillo] .color-name {
   color: #292b03;
 }
-body.color-window.verde {
+body.color-window[data-color=verde] {
   background-color: #87f7b4;
 }
-body.color-window.verde .color-name {
+body.color-window[data-color=verde] .color-name {
   color: #0a8f3f;
 }
-body.color-window.cian {
+body.color-window[data-color=cian] {
   background-color: #57f4d5;
 }
-body.color-window.cian .color-name {
+body.color-window[data-color=cian] .color-name {
   color: #065f4e;
 }
-body.color-window.morado {
+body.color-window[data-color=morado] {
   background-color: #9c95de;
 }
-body.color-window.morado .color-name {
+body.color-window[data-color=morado] .color-name {
   color: #29226c;
 }
 
-body.exercici02 main {
+body.exercici02 {
   font-family: "Cascadia Code", sans-serif;
+}
+body.exercici02 main.exercise-screen {
   background-color: #fcfaf6;
   display: flex;
   flex-direction: column;
   place-items: center;
   place-content: center;
+  position: relative;
+}
+body.exercici02 main.exercise-screen > .last-game-stats {
+  top: 0;
+  left: 0;
+  margin: 1rem;
+  padding: 1rem;
+  position: absolute;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden) {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hidden {
+  display: none;
 }
 
 /*# sourceMappingURL=styles.css.map */

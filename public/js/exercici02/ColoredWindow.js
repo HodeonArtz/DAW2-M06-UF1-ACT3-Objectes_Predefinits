@@ -33,9 +33,8 @@ export default class ColoredWindow {
 
     if (this.#windowReference) {
       this.#windowReference.window.top.document.title = this.color;
-      this.#windowReference.document.body.classList.add(
-        this.color.toLowerCase()
-      );
+      this.#windowReference.document.body.dataset.color =
+        this.color.toLowerCase();
       this.#windowReference.document.querySelector(".color-name").textContent =
         this.color;
     }
