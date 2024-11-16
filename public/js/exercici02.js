@@ -87,15 +87,18 @@ const view = {
       end: getElement(".end"),
     },
     button: {
-      start: getElement(".start__btn"),
-      end: getElement(".end-game__btn"),
-      retry: getElement(".retry__btn"),
+      start: getElement(".btn__start"),
+      end: getElement(".btn__end-game"),
+      retry: getElement(".btn__retry"),
+      stop: getElement(".btn__stop"),
       handleOnClickStart: (handleOnClick) =>
         view.elements.button.start.addEventListener("click", handleOnClick),
       handleOnClickEnd: (handleOnClick) =>
         view.elements.button.end.addEventListener("click", handleOnClick),
       handleOnClickRetry: (handleOnClick) =>
         view.elements.button.retry.addEventListener("click", handleOnClick),
+      handleOnClickStop: (handleOnClick) =>
+        view.elements.button.stop.addEventListener("click", handleOnClick),
     },
     lastGame: {
       box: getElement(".last-game-stats"),
@@ -196,6 +199,7 @@ const view = {
 
 view.elements.button.handleOnClickStart(startGame);
 view.elements.button.handleOnClickEnd(endGame);
+view.elements.button.handleOnClickStop(endGame);
 view.elements.button.handleOnClickRetry(retryGame);
 
 function setLastGameStats(dataStats) {
