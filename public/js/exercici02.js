@@ -6,7 +6,7 @@ import ColoredWindow from "../js/exercici02/ColoredWindow.js";
 
 const gameState = {
   activeWindows: [],
-  countdown: new Countdown(3),
+  countdown: new Countdown(30),
   totalWindowsOpened: 0,
   firstClickedWindow: null,
   isGameWon: false,
@@ -142,8 +142,8 @@ const view = {
     getElement(".msg__text").textContent = isGameWon
       ? "¡Enhorabuena!"
       : "¡Inténtalo otra vez!";
-    if (isGameWon) view.elements.button.end.classList.remove("hidden");
-    if (!isGameWon) view.elements.button.end.classList.add("hidden");
+    if (!isGameWon) view.elements.button.end.classList.remove("hidden");
+    if (isGameWon) view.elements.button.end.classList.add("hidden");
     view.elements.main.classList.remove("game-active");
     view.setDefaultGameScreen();
   },

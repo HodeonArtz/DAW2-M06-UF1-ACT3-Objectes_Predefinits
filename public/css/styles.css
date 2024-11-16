@@ -41,9 +41,6 @@ body.color-window {
   width: 100%;
   height: 100vh;
   font-size: 2rem;
-  -webkit-user-select: none; /* Safari */
-  -ms-user-select: none; /* IE 10 and IE 11 */
-  user-select: none; /* Standard syntax */
 }
 body.color-window main {
   width: 100%;
@@ -92,6 +89,28 @@ body.color-window[data-color=morado] .color-name {
   color: #29226c;
 }
 
+body.exercici02 {
+  color: #1d170a;
+  webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
+}
+body.exercici02 button {
+  font-weight: 800;
+  font-size: 1.5rem;
+  background-color: #ebdec4;
+  transition: background-color 150ms;
+  padding: 0.5rem 0.75rem;
+  border-radius: 1rem;
+  color: #302610;
+  cursor: pointer;
+}
+body.exercici02 button:hover {
+  background-color: #f2e9d7;
+}
+body.exercici02 button:active {
+  background-color: #e3d0aa;
+}
 body.exercici02 main {
   font-family: "Cascadia Code", sans-serif;
 }
@@ -122,17 +141,18 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden) {
   align-items: center;
   gap: 1rem;
   padding: 2rem;
+  border-radius: 1rem;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden) p {
   font-size: 2rem;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game--correct {
-  animation-name: sudden-color-animationulyj6wq;
+  animation-name: sudden-color-animationulyj850;
   animation-duration: 1s;
   animation-timing-function: cubic-bezier(0.39, 0.02, 0.39, 0.03);
   animation-fill-mode: forwards;
 }
-@keyframes sudden-color-animationulyj6wq {
+@keyframes sudden-color-animationulyj850 {
   from {
     background-color: #cbffcf;
   }
@@ -141,12 +161,12 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden).game--correct {
   }
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game--wrong {
-  animation-name: sudden-color-animationulyj6xg;
+  animation-name: sudden-color-animationulyj85c;
   animation-duration: 1s;
   animation-timing-function: cubic-bezier(0.39, 0.02, 0.39, 0.03);
   animation-fill-mode: forwards;
 }
-@keyframes sudden-color-animationulyj6xg {
+@keyframes sudden-color-animationulyj85c {
   from {
     background-color: #ffc1c1;
   }
@@ -188,6 +208,7 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-window
   font-size: 3rem;
   width: 15rem;
   height: 4.5rem;
+  border-radius: 1rem;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows > *.grayed {
   background-color: #f6efe3;
