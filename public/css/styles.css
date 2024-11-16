@@ -41,6 +41,9 @@ body.color-window {
   width: 100%;
   height: 100vh;
   font-size: 2rem;
+  -webkit-user-select: none; /* Safari */
+  -ms-user-select: none; /* IE 10 and IE 11 */
+  user-select: none; /* Standard syntax */
 }
 body.color-window main {
   width: 100%;
@@ -50,24 +53,40 @@ body.color-window main {
 }
 body.color-window[data-color=amarillo] {
   background-color: #e6f122;
+  transition: background-color 50ms;
+}
+body.color-window[data-color=amarillo]:active {
+  background-color: #b1bb0c;
 }
 body.color-window[data-color=amarillo] .color-name {
   color: #292b03;
 }
 body.color-window[data-color=verde] {
   background-color: #87f7b4;
+  transition: background-color 50ms;
+}
+body.color-window[data-color=verde]:active {
+  background-color: #3ff287;
 }
 body.color-window[data-color=verde] .color-name {
   color: #0a8f3f;
 }
 body.color-window[data-color=cian] {
   background-color: #57f4d5;
+  transition: background-color 50ms;
+}
+body.color-window[data-color=cian]:active {
+  background-color: #10efc3;
 }
 body.color-window[data-color=cian] .color-name {
   color: #065f4e;
 }
 body.color-window[data-color=morado] {
   background-color: #9c95de;
+  transition: background-color 50ms;
+}
+body.color-window[data-color=morado]:active {
+  background-color: #665bcc;
 }
 body.color-window[data-color=morado] .color-name {
   color: #29226c;
@@ -102,9 +121,38 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden) {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  padding: 2rem;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden) p {
   font-size: 2rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game--correct {
+  animation-name: sudden-color-animationulyj691;
+  animation-duration: 1s;
+  animation-timing-function: cubic-bezier(0.39, 0.02, 0.39, 0.03);
+  animation-fill-mode: forwards;
+}
+@keyframes sudden-color-animationulyj691 {
+  from {
+    background-color: #cbffcf;
+  }
+  to {
+    background-color: rgba(203, 255, 207, 0);
+  }
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game--wrong {
+  animation-name: sudden-color-animationulyj69c;
+  animation-duration: 1s;
+  animation-timing-function: cubic-bezier(0.39, 0.02, 0.39, 0.03);
+  animation-fill-mode: forwards;
+}
+@keyframes sudden-color-animationulyj69c {
+  from {
+    background-color: #ffc1c1;
+  }
+  to {
+    background-color: rgba(255, 193, 193, 0);
+  }
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows {
   display: flex;
@@ -134,6 +182,9 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-window
   font-size: 3rem;
   width: 15rem;
   height: 4.5rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-windows > *.grayed {
+  background-color: #f6efe3;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden).game .game__message {
   height: 4rem;

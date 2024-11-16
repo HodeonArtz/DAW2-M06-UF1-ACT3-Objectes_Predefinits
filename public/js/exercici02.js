@@ -103,6 +103,11 @@ const view = {
       windowTotalCount: getElement(".stats__window-count .count-number"),
     },
   },
+
+  setDefaultGameScreen: function () {
+    view.elements.screen.game.classList.remove("game--correct");
+    view.elements.screen.game.classList.remove("game--wrong");
+  },
   hideAllScreens: () => {
     Object.values(view.elements.screen).forEach((screen) => {
       screen.classList.add("hidden");
@@ -112,11 +117,14 @@ const view = {
     view.hideAllScreens();
     view.elements.screen.start.classList.remove("hidden");
     view.elements.main.classList.remove("game-active");
+    view.setDefaultGameScreen();
   },
   setGameScreen: () => {
     view.hideAllScreens();
     view.elements.screen.game.classList.remove("hidden");
     view.elements.main.classList.add("game-active");
+    view.elements.screen.end.classList.remove("end--won");
+    view.elements.screen.end.classList.remove("end--lost");
   },
   setEndScreen: (isGameWon) => {
     view.hideAllScreens();
@@ -134,6 +142,7 @@ const view = {
     if (isGameWon) view.elements.button.end.classList.remove("hidden");
     if (!isGameWon) view.elements.button.end.classList.add("hidden");
     view.elements.main.classList.remove("game-active");
+    view.setDefaultGameScreen();
   },
   setCountdown: (countdownTime) =>
     (getElement(".count-down").textContent = countdownTime),
@@ -171,10 +180,7 @@ const view = {
       secondWindowEl.textContent = secondWindow.color;
     }
   },
-  setDefaultGameScreen: function () {
-    view.elements.screen.game.classList.remove("game--correct");
-    view.elements.screen.game.classList.remove("game--wrong");
-  },
+
   setCorrectGameScreen: function () {
     view.elements.screen.game.classList.add("game--correct");
   },
@@ -258,7 +264,7 @@ function handleWindowClick(clickedWindow) {
     secondColorName = clickedWindow.color;
 
   if (firstColorName !== secondColorName) {
-    view.setInGameMessage("Clica");
+    view.setInGameMessage("¡Clica ventanas del mismo color!");
     view.setWrongGameScreen();
     return;
   }
