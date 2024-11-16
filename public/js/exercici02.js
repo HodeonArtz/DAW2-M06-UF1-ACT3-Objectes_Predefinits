@@ -147,8 +147,15 @@ const view = {
     view.elements.main.classList.remove("game-active");
     view.setDefaultGameScreen();
   },
-  setCountdown: (countdownTime) =>
-    (getElement(".count-down").textContent = countdownTime),
+  setCountdown: (countdownTime) => {
+    const countdownEl = getElement(".count-down");
+    countdownEl.textContent = countdownTime;
+    if (countdownTime < 5) {
+      countdownEl.dataset.time = "few-secs-remaining";
+      return;
+    }
+    countdownEl.dataset.time = "";
+  },
   setOpenedWindowsCount: (count) =>
     (getElement(".game-stats__window-count").textContent = count),
   setLastGameStats: (dataStats) => {
