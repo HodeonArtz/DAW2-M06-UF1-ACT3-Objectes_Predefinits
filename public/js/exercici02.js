@@ -110,7 +110,7 @@ const view = {
   setStartScreen: () => {
     view.hideAllScreens();
     view.elements.screen.start.classList.remove("hidden");
-    view.elements.main.className("");
+    view.elements.main.classList.remove("game-active");
   },
   setGameScreen: () => {
     view.hideAllScreens();
@@ -132,7 +132,7 @@ const view = {
       : "¡Inténtalo otra vez!";
     if (isGameWon) view.elements.button.end.classList.remove("hidden");
     if (!isGameWon) view.elements.button.end.classList.add("hidden");
-    view.elements.main.className = "";
+    view.elements.main.classList.remove("game-active");
   },
   setCountdown: (countdownTime) =>
     (getElement(".count-down").textContent = countdownTime),
