@@ -223,6 +223,7 @@ function startGame() {
       readLastGameStats();
     }
   );
+  view.setInGameMessage("");
 }
 
 function endGame() {

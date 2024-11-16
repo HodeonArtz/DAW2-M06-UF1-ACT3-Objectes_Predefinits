@@ -101,6 +101,7 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden) {
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 1rem;
 }
 body.exercici02 main.exercise-screen > .screen:not(.hidden) p {
   font-size: 2rem;
@@ -133,6 +134,9 @@ body.exercici02 main.exercise-screen > .screen:not(.hidden).game .clicked-window
   font-size: 3rem;
   width: 15rem;
   height: 4.5rem;
+}
+body.exercici02 main.exercise-screen > .screen:not(.hidden).game .game__message {
+  height: 4rem;
 }
 
 .hidden {
