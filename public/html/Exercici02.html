@@ -1,83 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="Link" content="&lt;./colorWindow.html&gt;; rel=prefetch">
-  <link rel="preload" href="../css/styles.css" as="style">
-  <link rel="prefetch" href="./colorWindow.html" as="document">
-  <link rel="stylesheet" href="../css/styles.css">
-  <script defer src="../js/exercici02.js" type="module"></script>
-  <title>Exercici02.html</title>
-</head>
-<body class="exercici02">
-  <nav class="nav">
-    <a class="nav__return-link" href="../../index.html">
-      <div class="return-link__icon">←</div>
-      <span class="return-link__text">Volver</span>
-    </a>
-    <h5 class="nav__author">Glen Marti Diciano Ibias - 2024</h5>
-    <h1 class="nav__exercise-title">
-      Actividad 03 - Exercici02.html
-    </h1>
-    <h2 class="nav__module-title">M06 - UF1</h2>
-      <a href="https://github.com/HodeonArtz/DAW2-M06-UF1-ACT3-Objectes_Predefinits"
-      target="_blank"
-      class="nav__github-repo">
-        <svg class="github-repo__github-logo"></svg>
-        <span class="github-repo__text">
-          Repositorio de GitHub
-        </span>
-      </a>
-    </div>
-  </nav>
-  <main class="exercise-screen">
-    <iframe id="preloadFrame" src="./colorWindow.html" style="display: none;"></iframe>
-    <!-- ---------------------- LAST GAME --------------------- -->
-    <div class="last-game-stats hidden">
-      <h4 class="last-game-stats__title">
-        Última Partida (<span class="stats__verb"></span>)
-      </h4>
-      <p class="stats__window-count">
-        Total de ventanas abiertas: <span class="count-number">0</span> 
-      </p>
-    </div>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Link"
+      content="&lt;./colorWindow.html&gt;; rel=prefetch"
+    />
+    <link rel="preload" href="../css/styles.css" as="style" />
+    <link rel="prefetch" href="./colorWindow.html" as="document" />
+    <link rel="stylesheet" href="../css/styles.css" />
+    <script defer src="../js/exercici02.js" type="module"></script>
+    <title>Exercici02.html</title>
+  </head>
+  <body class="exercici02">
+    <main class="exercise-screen">
+      <!-- ---------------------- GITHUB REPO --------------------- -->
 
-    <!-- ---------------------- START SCREEN --------------------- -->
-    <div class="screen start">
-      <h1>Empareja colores</h1>
-      <button class="btn__start">START</button>
-    </div>
-
-    <!-- ---------------------- IN-GAME SCREEN --------------------- -->
-    <div class="screen game hidden">
-      <div class="clicked-windows">
-        <div class="first-window">?</div>
-        <div class="second-window">?</div>
-      </div>   
-      <p class="game__message"></p>
-      <p class="count-down">
-        
-      </p>
-      <button class="btn__stop">STOP</button>
-    </div>
-
-    <!-- ---------------------- RESULTS / END SCREEN --------------------- -->
-    <div class="screen end hidden">
-      <div class="msg">
-        <h2 class="msg__title">¡Has <span class="msg__verb"></span>!</h2>
-        <p class="msg__text">
-
-        </p>
-        <p class="game-stats">
-          Total de ventanas abiertas: <span class="game-stats__window-count">0</span>
+      <div class="github-repo">
+        <a
+          class="github-repo__link"
+          target="_blank"
+          title="Link to repository"
+          href="https://github.com/HodeonArtz/DAW2-M06-UF1-ACT3-Objectes_Predefinits"
+          ><svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+            /></svg
+        ></a>
+      </div>
+      <!-- ---------------------- LAST GAME --------------------- -->
+      <div class="last-game-stats hidden">
+        <h4 class="last-game-stats__title">
+          Última Partida (<span class="stats__verb"></span>)
+        </h4>
+        <p class="stats__window-count">
+          Total de ventanas abiertas: <span class="count-number">0</span>
         </p>
       </div>
 
-      <button class="btn__end-game">FINALIZAR</button>
+      <!-- ---------------------- START SCREEN --------------------- -->
+      <div class="screen start">
+        <h1>Empareja colores</h1>
+        <button class="btn__start">START</button>
+      </div>
+
+      <!-- ---------------------- IN-GAME SCREEN --------------------- -->
+      <div class="screen game hidden">
+        <div class="clicked-windows">
+          <div class="first-window">?</div>
+          <div class="second-window">?</div>
+        </div>
+        <p class="game__message"></p>
+        <p class="count-down"></p>
+        <button class="btn__stop">STOP</button>
+      </div>
+
+      <!-- ---------------------- RESULTS / END SCREEN --------------------- -->
+      <div class="screen end hidden">
+        <div class="msg">
+          <h2 class="msg__title">¡Has <span class="msg__verb"></span>!</h2>
+          <p class="msg__text"></p>
+          <p class="game-stats">
+            Total de ventanas abiertas:
+            <span class="game-stats__window-count">0</span>
+          </p>
+        </div>
+
+        <button class="btn__end-game">FINALIZAR</button>
 
         <button class="btn__retry">JUGAR DE NUEVO</button>
-    </div>
-  </main>
-</body>
+      </div>
+    </main>
+  </body>
 </html>
