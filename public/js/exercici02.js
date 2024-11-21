@@ -4,6 +4,9 @@ import ColoredWindow from "../js/exercici02/ColoredWindow.js";
 
 // >>=====>>====>>====#[<| Game State |>]#====<<====<<=====<<
 
+/**
+ * Variables del juego
+ */
 const gameState = {
   activeWindows: [],
   countdown: new Countdown(30),
@@ -77,6 +80,9 @@ function getElement(selector) {
   return document.querySelector(selector);
 }
 
+/**
+ * DOM
+ */
 const view = {
   elements: {
     main: getElement("main"),
